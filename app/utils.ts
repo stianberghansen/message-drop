@@ -33,7 +33,7 @@ export async function encryptMessage(rawData: string, iv: Uint8Array, password: 
     const key_encoded = await hashEncode(password);
     const encodedText = new TextEncoder().encode(rawData);
     const ivUint8Arr = Uint8Array.from(iv);
-    return await window.crypto.subtle.encrypt(
+    const cryptedMessage = await window.crypto.subtle.encrypt(
         {
             name: "AES-CTR",
             counter: ivUint8Arr,
@@ -42,11 +42,20 @@ export async function encryptMessage(rawData: string, iv: Uint8Array, password: 
         key_encoded,
         encodedText,
     );
+    const decoder = new TextDecoder('utf-8');
+    console.log(btoa(decoder.decode(cryptedMessage)));
+    return btoa(decoder.decode(cryptedMessage));
 }
 
-export function parseCryptChunks(crypt: string): [Uint8Array, string] {
+export function parseCryptChunks(crypt: string): [Uint8Array, ArrayBuffer] {
     const ivChunk = crypt.split("").slice(0, IV_SIZE).toString();
     const iv = Buffer.from(ivChunk, "utf-8");
     const message = crypt.split("").slice(IV_SIZE, crypt.length).toString();
-    return [iv, message];
+    const messageBuf = new TextEncoder().encode(message);
+    return [iv, messageBuf];
+}
+
+export function uint8ToBase64(uint: Uint8Array){
+    const decoder = new TextDecoder('utf8');
+    return btoa(decoder.decode(uint));
 }

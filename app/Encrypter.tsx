@@ -27,6 +27,7 @@ export default function Encrypter({ hostname, iv }: { hostname: string, iv: Uint
 
     return (
         <>
+            {iv ?? <h1>Missing SALT</h1>}
             <h1>Encrypt a secret message</h1>
             <label htmlFor="message">Set hidden string</label>
             <input type="text" onChange={(e) => setRawData(e.target.value)} id="message" />

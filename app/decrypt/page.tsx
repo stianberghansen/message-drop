@@ -15,6 +15,7 @@ export default function Page({
     const handleDecryptMessage = async () => {
         if (typeof crypt == 'string') {
             const [iv, message] = parseCryptChunks(crypt);
+            console.log(iv, message);
             const decryptedData = await decryptMessage(message, iv, password);
             console.log(decryptedData);
         }
